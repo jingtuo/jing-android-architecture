@@ -1,2 +1,3 @@
 rootProject.name='AndroidArchitecture'
 include ':app'
+include ':android-arch'

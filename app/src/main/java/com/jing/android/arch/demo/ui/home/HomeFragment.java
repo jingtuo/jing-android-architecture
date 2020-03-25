@@ -1,5 +1,6 @@
 package com.jing.android.arch.demo.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +14,13 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.jing.android.arch.demo.R;
+import com.jing.android.arch.demo.ui.browser.BrowserActivity;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
@@ -28,6 +31,14 @@ public class HomeFragment extends Fragment {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
+            }
+        });
+
+        root.findViewById(R.id.btn_open_browser).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), BrowserActivity.class);
+                startActivity(intent);
             }
         });
         return root;

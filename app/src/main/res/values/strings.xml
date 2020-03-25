@@ -1,6 +1,12 @@
 <resources>
-    <string name="app_name">AndroidArchitecture</string>
+    <string name="app_name">安卓架构</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="lottery">彩票</string>
     <string name="title_notifications">Notifications</string>
+
+    <string name="open_browser">Open Browser</string>
+    <string name="app_has_been_switched_to_background">安卓架构已经切换至后台</string>
+    <string name="app_will_be_killed_to_free_memory">由于手机内存不足，安卓架构将被杀死用于释放内存</string>
+    <string name="app_last_run_state_killed_by_system_prompt">由于手机内存不足，安卓架构之前被系统杀死，不过请放心，您的数据已经妥善处理</string>
+    <string name="press_back_again_exit_app">再按一次返回退出应用</string>
 </resources>

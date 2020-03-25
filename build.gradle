@@ -20,7 +20,8 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+        //RxAndroid引入
+        maven { url "https://oss.jfrog.org/libs-snapshot" }
     }
 }
 
