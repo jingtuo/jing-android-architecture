@@ -1,10 +1,13 @@
 package com.jing.android.arch.repo.source;
 
+import java.util.List;
+
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.FlowableEmitter;
 import io.reactivex.rxjava3.core.FlowableOnSubscribe;
 
 /**
+ *
  * @param <T> 本地数据
  * @param <R> 服务数据
  * @author JingTuo
@@ -37,15 +40,31 @@ public abstract class DataSource<T, R> implements FlowableOnSubscribe<T> {
             result = getDataFromDatabase();
         }
         if (result != null) {
-            emitter.onNext(result);
-            if (!requestServerWhenDbHaveData) {
-                return;
+            if (result instanceof List) {
+                List resultList = (List) result;
+                if (!resultList.isEmpty()) {
+                    emitter.onNext(result);
+                    if (!requestServerWhenDbHaveData) {
+                        return;
+                    }
+                }
+            } else {
+                emitter.onNext(result);
+                if (!requestServerWhenDbHaveData) {
+                    return;
+                }
             }
+
         }
         //其次从服务器获取数据
         T newResult = null;
         if (serverEnabled) {
-            newResult = convert(getDataFromServer(emitter));
+            try {
+                R serverResult = getDataFromServer();
+                newResult = convert(serverResult);
+            } catch (Exception e) {
+                emitter.onError(e);
+            }
         }
         if (newResult != null) {
             if (databaseEnabled) {
@@ -71,10 +90,10 @@ public abstract class DataSource<T, R> implements FlowableOnSubscribe<T> {
     }
 
     /**
-     * @param emitter 用于处理服务器数据异常
+     *
      * @return
      */
-    protected R getDataFromServer(FlowableEmitter<T> emitter) {
+    protected R getDataFromServer() throws Exception {
         return null;
     }
 

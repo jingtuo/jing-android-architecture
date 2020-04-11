@@ -5,8 +5,11 @@ import androidx.room.RoomDatabase;
 
 /**
  *
+ * 彩票
+ *
+ * @author JingTuo
  */
-@Database(entities = {Lottery.class}, version = 1)
+@Database(entities = {Lottery.class, LotteryResult.class}, version = 1)
 public abstract class LotteryDatabase extends RoomDatabase {
 
     /**

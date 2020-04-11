@@ -9,24 +9,30 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.jing.android.arch.component.BaseFragment;
 import com.jing.android.arch.demo.R;
 import com.jing.android.arch.demo.ui.browser.BrowserActivity;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends BaseFragment {
 
     private HomeViewModel homeViewModel;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
+    protected int layoutId() {
+        return R.layout.fragment_home;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        homeViewModel = new ViewModelProvider(this,
+                ViewModelProvider.AndroidViewModelFactory
+                        .getInstance(requireActivity().getApplication()))
+                .get(HomeViewModel.class);
+        final TextView textView = view.findViewById(R.id.text_home);
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
@@ -34,13 +40,12 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        root.findViewById(R.id.btn_open_browser).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.btn_open_browser).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), BrowserActivity.class);
                 startActivity(intent);
             }
         });
-        return root;
     }
 }

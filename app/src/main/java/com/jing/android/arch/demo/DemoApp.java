@@ -1,10 +1,17 @@
 package com.jing.android.arch.demo;
 
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Process;
+import android.os.StrictMode;
 import android.widget.Toast;
+
+import androidx.multidex.MultiDex;
+
+import java.util.List;
 
 /**
  * @author JingTuo
@@ -19,14 +26,56 @@ public class DemoApp extends Application {
     public static final int APP_LAST_RUN_STATE_UNKNOWN = 4;
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        startStrictMode();
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
+    /**
+     * @return
+     */
+    private boolean isMainProcess() {
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        int mainProcessId = -1;
+        if (am != null) {
+            List<ActivityManager.RunningAppProcessInfo> processList = am.getRunningAppProcesses();
+            for (ActivityManager.RunningAppProcessInfo process : processList) {
+                if (process.processName.equals(getPackageName())) {
+                    mainProcessId = process.pid;
+                    break;
+                }
+            }
+        }
+        return Process.myPid() == mainProcessId;
+    }
+
+    private void startStrictMode() {
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                .detectAll()
+                .penaltyLog()
+                .build());
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                .detectAll()
+                .penaltyLog()
+                .build());
+    }
+
+
+    @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
         if (ComponentCallbacks2.TRIM_MEMORY_RUNNING_MODERATE == level) {
             //应用正在运行,系统内存降低,目前还可以正常运行
             return;
         }
-        if (ComponentCallbacks2. TRIM_MEMORY_RUNNING_LOW == level
-                || ComponentCallbacks2. TRIM_MEMORY_RUNNING_CRITICAL == level) {
+        if (ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW == level
+                || ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL == level) {
             //应用正在运行,系统内存降低,此时需要释放不影响页面显示的对象,否则应用将出现卡顿
 
             return;

@@ -50,6 +50,10 @@ CPU调度的负载能力。
 - Context.getCacheDir(): /data/user/0/com.jing.android.arch.demo/cache
 - Context.getExternalCacheDir(): /storage/emulated/0/Android/data/com.jing.android.arch.demo/cache
 
+## 版本变更
+
+> Note: If your app targets Android 8.0 (API level 26) or higher, don't request the READ_SMS permission as part of verifying a user's credentials. Instead, generate an app-specific token using createAppSpecificSmsToken(), then pass this token to another app or service that can send a verification SMS message.
+
 # 待学习
 
 - 计算创建一个对象所占用的内存

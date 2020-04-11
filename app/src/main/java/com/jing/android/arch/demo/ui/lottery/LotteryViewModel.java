@@ -1,28 +1,23 @@
 package com.jing.android.arch.demo.ui.lottery;
 
 import android.app.Application;
-import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
+import com.jing.android.arch.demo.repo.LotteryRepo;
 import com.jing.android.arch.demo.repo.db.Lottery;
-import com.jing.android.arch.demo.repo.db.LotteryDao;
 import com.jing.android.arch.demo.repo.db.LotteryDatabase;
-import com.jing.android.arch.demo.repo.source.JuHeLotterySource;
+import com.jing.android.arch.demo.repo.service.LotteryService;
 
 import java.util.List;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.functions.Consumer;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author JingTuo
@@ -30,38 +25,31 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class LotteryViewModel extends AndroidViewModel {
 
 
-    private MutableLiveData<List<Lottery>> lotteryList;
-
-    private LotteryDao dao;
-
-    private final CompositeDisposable mDisposable = new CompositeDisposable();
+    private LotteryRepo repo;
 
     public LotteryViewModel(@NonNull Application application) {
         super(application);
-        this.lotteryList = new MutableLiveData<>();
         LotteryDatabase db = Room.databaseBuilder(application, LotteryDatabase.class, "lottery").build();
-        dao = db.lotteryDao();
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .client(client)
+                .baseUrl("http://apis.juhe.cn/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        repo = new LotteryRepo(db.lotteryDao(), retrofit.create(LotteryService.class));
     }
 
     public LiveData<List<Lottery>> lotteryList() {
-        return lotteryList;
-    }
-
-    public void loadData() {
-        //可以使用缓存
-        mDisposable.add(Flowable.create(new JuHeLotterySource(dao), BackpressureStrategy.LATEST)
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(lotteries -> lotteryList.setValue(lotteries), throwable -> {
-                    Log.e("Lottery", TextUtils.isEmpty(throwable.getMessage()) ? "unknown" : throwable.getMessage());
-                })
-        );
+        return repo.getLotteryList();
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-        mDisposable.dispose();
-        mDisposable.clear();
+        repo.release();
     }
 }

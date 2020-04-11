@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "069ffacf720f52fea5831175266a25ab",
+    "identityHash": "b0742b31c1ea1ad5bb7d2a0c29317e3d",
     "entities": [
       {
         "tableName": "Lottery",
@@ -47,12 +47,69 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "LotteryResult",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `result` TEXT, `no` TEXT NOT NULL, `date` TEXT, `expireDate` TEXT, `saleAmount` TEXT, `poolAmount` TEXT, PRIMARY KEY(`id`, `no`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "result",
+            "columnName": "result",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "no",
+            "columnName": "no",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "expireDate",
+            "columnName": "expireDate",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "saleAmount",
+            "columnName": "saleAmount",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "poolAmount",
+            "columnName": "poolAmount",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id",
+            "no"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '069ffacf720f52fea5831175266a25ab')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b0742b31c1ea1ad5bb7d2a0c29317e3d')"
     ]
   }
 }

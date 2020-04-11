@@ -9,9 +9,15 @@ import com.google.gson.annotations.SerializedName;
  */
 public class JuHeLottery {
 
+    /**
+     * 彩票id
+     */
     @SerializedName("lottery_id")
     private String lotteryId;
 
+    /**
+     * 彩票名称
+     */
     @SerializedName("lottery_name")
     private String lotteryName;
 
@@ -21,6 +27,9 @@ public class JuHeLottery {
     @SerializedName("lottery_type_id")
     private String lotteryTypeId;
 
+    /**
+     * 描述信息
+     */
     private String remarks;
 
     public String getLotteryId() {
