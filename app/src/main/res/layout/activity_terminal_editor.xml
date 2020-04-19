@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.lottery.history.LotteryHistoryActivity">
+    tools:context=".ui.editor.terminal.TerminalEditorActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -16,17 +16,21 @@
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/terminal"
+            app:contentInsetStartWithNavigation="0dp"
             app:layout_scrollFlags="noScroll"
-            app:title="@string/lottery"
-            app:titleMarginStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"/>
+            app:menu="@menu/terminal_editor_menu"
+            app:navigationContentDescription="@string/back"
+            app:title="@string/terminal"
+            app:titleMarginStart="0dp" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    </androidx.viewpager.widget.ViewPager>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

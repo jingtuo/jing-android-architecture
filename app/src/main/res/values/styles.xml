@@ -6,11 +6,16 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionOverflowMenuStyle">@style/AppTheme.PopupMenuOverflow</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+    </style>
+
+    <style name="AppTheme.PopupMenuOverflow" parent="Widget.MaterialComponents.PopupMenu.Overflow">
+        <item name="overlapAnchor">false</item>
     </style>
 
 </resources>

@@ -60,13 +60,28 @@ public class BaseFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         containerIsViewPager = container instanceof ViewPager;
         Log.i(getClass().getSimpleName(), "onCreateView: " + containerIsViewPager);
-        return inflater.inflate(layoutId(), container, false);
+        View view = inflater.inflate(layoutId(), container, false);
+        initView(view);
+        return view;
     }
 
     protected int layoutId() {
         return android.R.layout.list_content;
     }
 
+    /**
+     * 初始化View的Sub View
+     * @param view
+     */
+    protected void initView(View view) {
+
+    }
+
+    /**
+     * 根据savedInstanceState和args修改view
+     * @param view Root View
+     * @param savedInstanceState 保存的数据
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

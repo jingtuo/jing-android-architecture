@@ -16,4 +16,12 @@
     <string name="lottery_date">开奖日期</string>
     <string name="lottery_expire_date">兑奖截止日期</string>
 
+    <string name="terminal">命令行</string>
+    <string name="terminal_add">新建</string>
+    <string name="terminal_help">帮助</string>
+    <string name="terminal_prompt">提示</string>
+    <string name="back">返回</string>
+    <string name="terminal_why_to_apply_for_write_storage">在命令行中执行的某些命令(如: mkdir, touch)需要应用具有写权限, 是否立即授予</string>
+    <string name="terminal_open_write_storage_in_pm">在命令行中执行的某些命令(如: mkdir, touch)需要应用具有写权限, 请在权限管理功能中开启写权限</string>
+
 </resources>

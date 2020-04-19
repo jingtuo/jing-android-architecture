@@ -1,7 +1,5 @@
 package com.jing.android.arch.demo.ui.lottery.history;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,7 +9,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.appbar.MaterialToolbar;
+import com.jing.android.arch.component.BaseActivity;
 import com.jing.android.arch.demo.R;
 import com.jing.android.arch.demo.util.AndroidViewModelFactory;
 
@@ -20,21 +18,16 @@ import com.jing.android.arch.demo.util.AndroidViewModelFactory;
  *
  * @author JingTuo
  */
-public class LotteryHistoryActivity extends AppCompatActivity {
+public class LotteryHistoryActivity extends BaseActivity {
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lottery_history);
-        MaterialToolbar toolbar = findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
         Intent intent = getIntent();
         String title = intent.getStringExtra("name");
-        if (actionBar != null) {
-            actionBar.setTitle(title);
-        }
+        setActionBar(R.id.tool_bar, title, true);
         LotteryHistoryViewModel vm = new ViewModelProvider(this,
                 new AndroidViewModelFactory() {
                     @Override

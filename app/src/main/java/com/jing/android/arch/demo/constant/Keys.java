@@ -10,4 +10,6 @@ public class Keys {
 
     public static final String NAME = "name";
 
+    public static final String FIRST_ENTER_TERMINAL = "first_enter_terminal";
+
 }

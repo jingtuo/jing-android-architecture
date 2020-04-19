@@ -2,9 +2,7 @@ package com.jing.android.arch.demo.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.jing.android.arch.component.BaseFragment;
 import com.jing.android.arch.demo.R;
 import com.jing.android.arch.demo.ui.browser.BrowserActivity;
+import com.jing.android.arch.demo.ui.editor.terminal.TerminalEditorActivity;
+
 
 public class HomeFragment extends BaseFragment {
 
@@ -44,6 +44,14 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), BrowserActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        view.findViewById(R.id.btn_open_terminal).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), TerminalEditorActivity.class);
                 startActivity(intent);
             }
         });

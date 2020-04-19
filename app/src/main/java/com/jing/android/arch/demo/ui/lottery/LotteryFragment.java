@@ -1,17 +1,12 @@
 package com.jing.android.arch.demo.ui.lottery;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -29,8 +24,6 @@ import java.util.List;
  * @author JingTuo
  */
 public class LotteryFragment extends BaseFragment {
-
-    private static final int REQUEST_PERMISSION_INTERNET = 1;
 
     private LotteryViewModel lotteryViewModel;
 
@@ -54,20 +47,7 @@ public class LotteryFragment extends BaseFragment {
             intent.putExtra(Keys.NAME, lottery.getName());
             startActivity(intent);
         });
-        if (PackageManager.PERMISSION_GRANTED ==
-                ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.INTERNET)) {
-            //已经授权
-            initViewModel();
-            return;
-        }
-        boolean flag = shouldShowRequestPermissionRationale(Manifest.permission.INTERNET);
-        if (flag) {
-            //用户拒绝授权,未勾选不再访问,向用户描述为什么要使用权限,用户同意之后requestPermissions
-//            requestPermissions(new String[]{Manifest.permission.INTERNET}, REQUEST_PERMISSION_INTERNET);
-        } else {
-            //用户拒绝授权,并且勾选了不再访问,TODO 待验证requestPermissions是否有效,如果无效引导用户进入应用设置页面
-            requestPermissions(new String[]{Manifest.permission.INTERNET}, REQUEST_PERMISSION_INTERNET);
-        }
+        initViewModel();
     }
 
     private void initViewModel() {
@@ -83,17 +63,5 @@ public class LotteryFragment extends BaseFragment {
                 listView.setAdapter(adapter);
             }
         });
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (REQUEST_PERMISSION_INTERNET == requestCode) {
-            if (Manifest.permission.INTERNET.equals(permissions[0])
-                    && PackageManager.PERMISSION_GRANTED == grantResults[0]) {
-                initViewModel();
-            }
-
-        }
     }
 }

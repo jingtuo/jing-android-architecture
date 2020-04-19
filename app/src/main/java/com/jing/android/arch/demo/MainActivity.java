@@ -46,12 +46,7 @@ public class MainActivity extends BaseActivity {
         binding.setLifecycleOwner(this);
 
         //设置标题默认值,actionBar.setTitle和presenter.setTitle缺一不可,暂时未相当恰当的方案
-        MaterialToolbar toolbar = findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(getString(R.string.home));
-        }
+        setActionBar(R.id.tool_bar, getString(R.string.home), false);
         presenter.setTitle(getString(R.string.home));
 
         ViewPager viewPager = findViewById(R.id.view_pager);
