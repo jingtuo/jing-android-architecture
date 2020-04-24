@@ -24,10 +24,16 @@ public class LotteryResultAdapter extends PagedListAdapter<LotteryResult, Lotter
         super(DIFF_CALLBACK);
     }
 
+    private OnItemClickListener<LotteryResult> onItemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener<LotteryResult> onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
     @NonNull
     @Override
     public LotteryResultViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater =LayoutInflater.from(parent.getContext());
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         LotteryResultItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.lottery_result_item, parent, false);
         return new LotteryResultViewHolder(binding);
     }
@@ -45,10 +51,15 @@ public class LotteryResultAdapter extends PagedListAdapter<LotteryResult, Lotter
 
         private LotteryResultItemBinding binding;
 
-
         LotteryResultViewHolder(LotteryResultItemBinding binding) {
             super(binding.getRoot());
-            this.binding= binding;
+            this.binding = binding;
+            binding.getRoot().setOnClickListener(v -> {
+                if (onItemClickListener != null) {
+                    int position = getAdapterPosition();
+                    onItemClickListener.onItemClick(position, getItem(position));
+                }
+            });
         }
 
 
@@ -62,16 +73,14 @@ public class LotteryResultAdapter extends PagedListAdapter<LotteryResult, Lotter
         public boolean areItemsTheSame(@NonNull LotteryResult oldItem, @NonNull LotteryResult newItem) {
             return oldItem.getId() != null
                     && oldItem.getId().equals(newItem.getId())
-                    && oldItem.getNo() != null
-                    && oldItem.getNo().equals(newItem.getNo());
+                    && oldItem.getLotteryNo().equals(newItem.getLotteryNo());
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull LotteryResult oldItem, @NonNull LotteryResult newItem) {
             return oldItem.getId() != null
                     && oldItem.getId().equals(newItem.getId())
-                    && oldItem.getNo() != null
-                    && oldItem.getNo().equals(newItem.getNo())
+                    && oldItem.getLotteryNo().equals(newItem.getLotteryNo())
                     && oldItem.getResult() != null
                     && oldItem.getResult().equals(newItem.getResult());
         }

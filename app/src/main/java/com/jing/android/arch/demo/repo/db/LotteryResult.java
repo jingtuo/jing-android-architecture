@@ -7,7 +7,7 @@ import androidx.room.Entity;
  *
  * @author JingTuo
  */
-@Entity(primaryKeys = {"id", "no"})
+@Entity(primaryKeys = {"id", "lotteryNo"})
 public class LotteryResult {
 
     /**
@@ -17,20 +17,20 @@ public class LotteryResult {
     private String id;
 
     /**
+     * 开奖期号,由于no是关键词,不能是no作为名称
+     */
+    @NonNull
+    private String lotteryNo;
+
+    /**
      * 开奖结果
      */
     private String result;
 
     /**
-     * 开奖期号
+     * 开奖日期,由于date是日期函数,不能是date作为名称
      */
-    @NonNull
-    private String no;
-
-    /**
-     * 开奖日期
-     */
-    private String date;
+    private String resultDate;
 
     /**
      * 兑奖截止日期
@@ -63,20 +63,21 @@ public class LotteryResult {
         this.result = result;
     }
 
-    public String getNo() {
-        return no;
+    @NonNull
+    public String getLotteryNo() {
+        return lotteryNo;
     }
 
-    public void setNo(String no) {
-        this.no = no;
+    public void setLotteryNo(@NonNull String lotteryNo) {
+        this.lotteryNo = lotteryNo;
     }
 
-    public String getDate() {
-        return date;
+    public String getResultDate() {
+        return resultDate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setResultDate(String resultDate) {
+        this.resultDate = resultDate;
     }
 
     public String getExpireDate() {

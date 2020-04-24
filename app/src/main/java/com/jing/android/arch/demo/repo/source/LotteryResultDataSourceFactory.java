@@ -18,9 +18,9 @@ public class LotteryResultDataSourceFactory extends DataSource.Factory<PageNoInf
 
     private static final String TAG = LotteryResultDataSourceFactory.class.getSimpleName();
 
-    private MutableLiveData<LotteryResultDataSource> mLotteryResultSource = new MutableLiveData<>();
+    private MutableLiveData<LotteryResultListSource> mLotteryResultSource = new MutableLiveData<>();
 
-    private LotteryResultDataSource mLastLotteryResultSource;
+    private LotteryResultListSource mLastLotteryResultSource;
 
     private LotteryService service;
 
@@ -38,12 +38,12 @@ public class LotteryResultDataSourceFactory extends DataSource.Factory<PageNoInf
     @Override
     public DataSource<PageNoInfo, LotteryResult> create() {
         Log.i(TAG, "create data source");
-        mLastLotteryResultSource = new LotteryResultDataSource(service, dao, id);
+        mLastLotteryResultSource = new LotteryResultListSource(service, dao, id);
         mLotteryResultSource.postValue(mLastLotteryResultSource);
         return mLastLotteryResultSource;
     }
 
-    public LotteryResultDataSource getLastLotteryResultSource() {
+    public LotteryResultListSource getLastLotteryResultSource() {
         return mLastLotteryResultSource;
     }
 }

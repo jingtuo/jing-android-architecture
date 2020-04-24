@@ -69,4 +69,6 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
     implementation "androidx.paging:paging-runtime:2.1.2"
+
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

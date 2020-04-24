@@ -5,7 +5,6 @@ buildscript {
     repositories {
         google()
         jcenter()
-        
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.6.3'
@@ -22,6 +21,7 @@ allprojects {
         jcenter()
         //RxAndroid引入
         maven { url "https://oss.jfrog.org/libs-snapshot" }
+        maven { url 'https://jitpack.io' }
     }
 }
 

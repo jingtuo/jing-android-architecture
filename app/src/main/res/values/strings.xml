@@ -20,8 +20,15 @@
     <string name="terminal_add">新建</string>
     <string name="terminal_help">帮助</string>
     <string name="terminal_prompt">提示</string>
+    <string name="terminal_sync">同步</string>
+    <string name="terminal_chart">报表</string>
     <string name="back">返回</string>
     <string name="terminal_why_to_apply_for_write_storage">在命令行中执行的某些命令(如: mkdir, touch)需要应用具有写权限, 是否立即授予</string>
     <string name="terminal_open_write_storage_in_pm">在命令行中执行的某些命令(如: mkdir, touch)需要应用具有写权限, 请在权限管理功能中开启写权限</string>
+    <string name="syncing">正在同步</string>
+    <string name="sync_success">同步成功</string>
 
+    <string name="red_ball">红球</string>
+    <string name="blue_ball">蓝球</string>
+    <string name="lottery_chart_no_data">暂无开奖记录</string>
 </resources>

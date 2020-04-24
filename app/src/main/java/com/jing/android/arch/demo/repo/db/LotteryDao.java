@@ -1,6 +1,7 @@
 package com.jing.android.arch.demo.repo.db;
 
 import androidx.room.Dao;
+import androidx.room.DatabaseView;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -54,16 +55,66 @@ public abstract class LotteryDao {
      * @param pageSize 每页数量
      * @return
      */
-    @Query("SELECT * FROM LotteryResult WHERE id = :id ORDER BY date DESC LIMIT :pageSize OFFSET (:pageNo - 1) * :pageSize")
-    public abstract List<LotteryResult> queryLotteryHistory(String id, int pageNo, int pageSize);
+    @Query("SELECT * FROM LotteryResult WHERE id = :id ORDER BY resultDate DESC LIMIT :pageSize OFFSET (:pageNo - 1) * :pageSize")
+    public abstract List<LotteryResult> queryLotteryResult(String id, int pageNo, int pageSize);
 
 
     /**
      * 查询彩票的开奖结果
-     * @param data
+     * @param data 开奖结果
      * @return
      */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     public abstract long[] insertLotteryHistory(List<LotteryResult> data);
+
+    /**
+     * 查询指定日期之前的指定球号出现的次数
+     * 双色球:
+     * 取红球,start=1,end=6
+     * 取蓝球,start=7,end=7
+     * @param id 彩票id
+     * @param ballNo 球号
+     * @param start 第一个球传1
+     * @param end 最后一个球
+     * @param date 查询指定日期之前的数据
+     * @return
+     */
+    @Query("SELECT COUNT(*) AS frequency FROM LotteryResult WHERE id = :id " +
+            "AND SUBSTR(result, (:start - 1) * 3 + 1, ((:end - :start) + 1) * 3 - 1) LIKE '%'||:ballNo||'%' " +
+            "AND DATE(resultDate) < DATE(:date)")
+    public abstract int queryLotteryBallNoCount(String id, String ballNo, int start, int end, String date);
+
+    /**
+     * 查询彩票的开奖次数
+     * @param id 彩票id
+     * @return
+     */
+    @Query("SELECT COUNT(*) FROM LotteryResult WHERE id = :id")
+    public abstract int queryLotteryResultCount(String id);
+
+
+    /**
+     * 目前用于查询指定日期之前的第n个球出现的球号,手机上目前查询一年之内的数据
+     * 如双色球的蓝色球
+     * @param id 彩票id
+     * @param position 第一个球是1
+     * @param date 查询指定日期之前的数据
+     * @return
+     */
+    @Query("SELECT id AS id, lotteryNo AS lotteryNo, " +
+            "SUBSTR(result, (:position - 1) * 3 + 1,  2) AS ballNo, " +
+            "resultDate AS resultDate FROM LotteryResult WHERE id = :id " +
+            "AND DATE(resultDate) < DATE(:date) AND DATE(resultDate) >= DATE(:date, 'start of year', '-1 year')" +
+            "ORDER BY resultDate ASC")
+    public abstract List<LotterySubResult> queryLotterySubResult(String id, int position, String date);
+
+    /**
+     * 查询彩票和开奖期号查询开奖结果
+     * @param id 彩票
+     * @param lotteryNo 开奖期号
+     * @return
+     */
+    @Query("SELECT * FROM LotteryResult WHERE id = :id AND lotteryNo = :lotteryNo")
+    public abstract LotteryResult queryLotteryResult(String id, String lotteryNo);
 
 }

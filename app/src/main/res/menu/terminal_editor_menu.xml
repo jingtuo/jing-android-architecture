@@ -13,5 +13,6 @@
         android:id="@+id/menu_help"
         android:contentDescription="@string/terminal_help"
         android:icon="@drawable/ic_menu_help_outline_24dp"
-        android:title="@string/terminal_help" />
+        android:title="@string/terminal_help"
+        app:showAsAction="ifRoom" />
 </menu>

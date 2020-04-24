@@ -31,9 +31,9 @@ import retrofit2.Response;
  *
  * @author JingTuo
  */
-public class LotteryResultDataSource extends PageKeyedDataSource<PageNoInfo, LotteryResult> {
+public class LotteryResultListSource extends PageKeyedDataSource<PageNoInfo, LotteryResult> {
 
-    private static final String TAG = LotteryResultDataSource.class.getSimpleName();
+    private static final String TAG = LotteryResultListSource.class.getSimpleName();
 
     private LotteryService service;
 
@@ -43,7 +43,7 @@ public class LotteryResultDataSource extends PageKeyedDataSource<PageNoInfo, Lot
 
     private String todayDate;
 
-    public LotteryResultDataSource(LotteryService service, LotteryDao dao, String id) {
+    public LotteryResultListSource(LotteryService service, LotteryDao dao, String id) {
         this.service = service;
         this.dao = dao;
         this.id = id;
@@ -102,11 +102,11 @@ public class LotteryResultDataSource extends PageKeyedDataSource<PageNoInfo, Lot
         boolean serverError = false;
 
         //先从本地数据查询
-        result = dao.queryLotteryHistory(id, 1, params.requestedLoadSize);
+        result = dao.queryLotteryResult(id, 1, params.requestedLoadSize);
         if (result != null && result.size() >= 1) {
             //本地有数据
             LotteryResult firstItem = result.get(0);
-            String firstDate = firstItem.getDate();
+            String firstDate = firstItem.getResultDate();
             if (todayDate.equals(firstDate)) {
                 //最新数据已经保存在数据库了，不需要从服务器查询
                 if (result.size() >= params.requestedLoadSize) {
@@ -137,7 +137,7 @@ public class LotteryResultDataSource extends PageKeyedDataSource<PageNoInfo, Lot
             Log.e(TAG, e.getMessage(), e);
             serverError = true;
         }
-        result = dao.queryLotteryHistory(id, 1, params.requestedLoadSize);
+        result = dao.queryLotteryResult(id, 1, params.requestedLoadSize);
         int dbSize = result.size();
         if (serverError) {
             if (dbSize >= params.requestedLoadSize) {
@@ -156,7 +156,7 @@ public class LotteryResultDataSource extends PageKeyedDataSource<PageNoInfo, Lot
         Log.i(TAG, "loadBefore: " + params.requestedLoadSize);
         int pageNo = params.key.pageNo;
         Log.i(TAG, "param:" + pageNo);
-        List<LotteryResult> result = dao.queryLotteryHistory(id, pageNo, params.requestedLoadSize);
+        List<LotteryResult> result = dao.queryLotteryResult(id, pageNo, params.requestedLoadSize);
         if (pageNo == 1) {
             //已经到第一页
             callback.onResult(result, null);
@@ -172,7 +172,7 @@ public class LotteryResultDataSource extends PageKeyedDataSource<PageNoInfo, Lot
         int pageNo = pageNoInfo.pageNo;
         List<LotteryResult> result = null;
         if (pageNoInfo.nextPageGetFromDbFirst) {
-            result = dao.queryLotteryHistory(id, pageNo, params.requestedLoadSize);
+            result = dao.queryLotteryResult(id, pageNo, params.requestedLoadSize);
         }
         if (result != null && result.size() >= params.requestedLoadSize) {
             PageNoInfo nextPageInfo = new PageNoInfo();
@@ -193,7 +193,7 @@ public class LotteryResultDataSource extends PageKeyedDataSource<PageNoInfo, Lot
                 nextPageInfo.pageNo = pageNo + 1;
                 nextPageInfo.nextPageGetFromDbFirst = false;
             }
-            result = dao.queryLotteryHistory(id, pageNo, params.requestedLoadSize);
+            result = dao.queryLotteryResult(id, pageNo, params.requestedLoadSize);
             callback.onResult(result, nextPageInfo);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
@@ -208,9 +208,9 @@ public class LotteryResultDataSource extends PageKeyedDataSource<PageNoInfo, Lot
             for (JuHeLotteryResult from : data) {
                 LotteryResult to = new LotteryResult();
                 to.setId(from.getLotteryId());
-                to.setNo(from.getLotteryNo());
+                to.setLotteryNo(from.getLotteryNo());
                 to.setResult(from.getLotteryResult());
-                to.setDate(from.getLotteryDate());
+                to.setResultDate(from.getLotteryDate());
                 to.setExpireDate(from.getLotteryExpireDate());
                 to.setSaleAmount(from.getLotterySaleAmount());
                 to.setPoolAmount(from.getLotteryPoolAmount());

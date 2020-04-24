@@ -16,4 +16,26 @@ public class Constants {
 
     public static final int LOTTERY_SERVICE_QUERY_LOTTERY_HISTORY_TAG = 0xFFFFFF01;
 
+    public static final String SYNC_STATUS_SYNCING = "syncing";
+
+    public static final String SYNC_STATUS_SUCCESS = "success";
+
+    public static final String SYNC_STATUS_FAILURE = "failure";
+
+    /**
+     * 彩票id-双色球
+     */
+    public static final String LOTTERY_ID_SSQ = "ssq";
+
+    /**
+     * 红色球
+     */
+    public static final String LOTTERY_BALL_FLAG_RED = "red";
+
+    /**
+     * 蓝色球
+     */
+    public static final String LOTTERY_BALL_FLAG_BLUE = "blue";
+
+
 }
