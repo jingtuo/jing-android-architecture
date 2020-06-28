@@ -39,6 +39,7 @@ public class SsqAnalysisActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_ssq_analysis);
+        binding.setLifecycleOwner(this);
         Intent intent = getIntent();
         String title = intent.getStringExtra("name");
         setActionBar(R.id.tool_bar, title, true);
@@ -53,6 +54,8 @@ public class SsqAnalysisActivity extends BaseActivity {
                 return getIntent().getExtras();
             }
         }).get(SsqAnalysisViewModel.class);
+
+        binding.setVm(vm);
 
         vm.result().observe(this, new Observer<LotteryResult>() {
             @Override
@@ -76,14 +79,23 @@ public class SsqAnalysisActivity extends BaseActivity {
         //红色球出现频率
         vm.redBallFrequency().observe(this, myChartData -> {
             BarDataSet set = (BarDataSet) myChartData.getChartData().getDataSets().get(0);
-            set.setHighLightAlpha(10);
+            set.setHighLightAlpha(30);
+            set.setValueTextColor(ContextCompat.getColor(SsqAnalysisActivity.this, android.R.color.white));
             set.setColor(ContextCompat.getColor(SsqAnalysisActivity.this, R.color.pink_700));
             barChartRedFrequency.getXAxis().setValueFormatter(new ValueFormatter() {
                 @Override
                 public String getAxisLabel(float value, AxisBase axis) {
-                    return myChartData.getSourceData().get((int) value).getBallNo();
+                    int index = (int) value;
+                    int size = myChartData.getSourceData().size();
+                    if (index >= 0 && index < size) {
+                        return myChartData.getSourceData().get(index).getBallNo();
+                    }
+                    return "";
                 }
             });
+            barChartRedFrequency.setScaleMinima(3f, 1f);
+            barChartRedFrequency.setVisibleXRangeMaximum(33);
+            barChartRedFrequency.setVisibleXRangeMinimum(11);
             barChartRedFrequency.setData(myChartData.getChartData());
             barChartRedFrequency.invalidate();
         });
@@ -91,15 +103,23 @@ public class SsqAnalysisActivity extends BaseActivity {
         //蓝色球出现频率
         vm.blueBallFrequency().observe(this, myChartData -> {
             BarDataSet set = (BarDataSet) myChartData.getChartData().getDataSets().get(0);
-            set.setHighLightAlpha(10);
+            set.setHighLightAlpha(30);
+            set.setValueTextColor(ContextCompat.getColor(SsqAnalysisActivity.this, android.R.color.white));
             set.setColor(ContextCompat.getColor(SsqAnalysisActivity.this, R.color.indigo_700));
             barChartBlueFrequency.getXAxis().setValueFormatter(new ValueFormatter() {
                 @Override
                 public String getAxisLabel(float value, AxisBase axis) {
-                    return myChartData.getSourceData().get((int) value).getBallNo();
+                    int index = (int) value;
+                    int size = myChartData.getSourceData().size();
+                    if (index >= 0 && index < size) {
+                        return myChartData.getSourceData().get(index).getBallNo();
+                    }
+                    return "";
                 }
             });
-            barChartBlueFrequency.getXAxis().setAxisMaximum(myChartData.getSourceData().size());
+            barChartRedFrequency.setScaleMinima(3f, 1f);
+            barChartRedFrequency.setVisibleXRangeMaximum(33);
+            barChartRedFrequency.setVisibleXRangeMinimum(11);
             barChartBlueFrequency.setData(myChartData.getChartData());
             barChartBlueFrequency.invalidate();
         });
@@ -112,7 +132,12 @@ public class SsqAnalysisActivity extends BaseActivity {
             lineChartBlueTrend.getXAxis().setValueFormatter(new ValueFormatter() {
                 @Override
                 public String getAxisLabel(float value, AxisBase axis) {
-                    return myChartData.getSourceData().get((int) value).getResultDate();
+                    int index = (int) value;
+                    int size = myChartData.getSourceData().size();
+                    if (index >= 0 && index < size) {
+                        return myChartData.getSourceData().get(index).getResultDate();
+                    }
+                    return "";
                 }
             });
             int size = myChartData.getSourceData().size();
@@ -131,8 +156,10 @@ public class SsqAnalysisActivity extends BaseActivity {
         chart.setDrawBarShadow(false);
         chart.setDrawValueAboveBar(false);
         chart.setDoubleTapToZoomEnabled(false);
-        chart.setDragEnabled(false);
-        chart.setScaleEnabled(false);
+        chart.setScaleXEnabled(true);
+        chart.setScaleYEnabled(false);
+        chart.setDragXEnabled(true);
+        chart.setDragYEnabled(false);
         chart.setNoDataText(getString(R.string.lottery_chart_no_data));
         chart.getAxisRight().setEnabled(false);
         chart.getLegend().setEnabled(false);

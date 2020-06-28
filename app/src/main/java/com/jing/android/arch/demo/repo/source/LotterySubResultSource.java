@@ -41,7 +41,7 @@ public class LotterySubResultSource implements SingleOnSubscribe<List<LotterySub
         if (Constants.LOTTERY_ID_SSQ.equals(id)) {
             //双色球
             if (Constants.LOTTERY_BALL_FLAG_BLUE.equals(flag)) {
-                result.addAll(dao.queryLotterySubResult(id, 7, date));
+                result.addAll(dao.queryLotterySubResultByDayAsc(id, 7, date, 365));
             }
         }
         emitter.onSuccess(result);

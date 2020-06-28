@@ -18,6 +18,9 @@ import com.jing.android.arch.demo.repo.db.LotteryDao;
 import com.jing.android.arch.demo.repo.db.LotteryDatabase;
 import com.jing.android.arch.demo.repo.db.LotteryResult;
 import com.jing.android.arch.demo.repo.db.LotterySubResult;
+import com.jing.android.arch.demo.repo.source.AverageForecastSource;
+import com.jing.android.arch.demo.repo.source.GoldRatioForecastSource;
+import com.jing.android.arch.demo.repo.source.IntelligentAForecastSource;
 import com.jing.android.arch.demo.repo.source.LotteryBallSource;
 import com.jing.android.arch.demo.repo.source.LotteryBallToBarDataSource;
 import com.jing.android.arch.demo.repo.source.LotteryResultSource;
@@ -47,6 +50,36 @@ public class SsqAnalysisViewModel extends AndroidViewModel {
     private MutableLiveData<MyChartData<BarData, List<LotteryBall>>> mRedBallFrequency;
     private MutableLiveData<MyChartData<BarData, List<LotteryBall>>> mBlueBallFrequency;
     private MutableLiveData<MyChartData<LineData, List<LotterySubResult>>> mBlueBallTrend;
+    /**
+     * 平均线预测-红色球
+     */
+    private MutableLiveData<String> mAfRedBall;
+
+    /**
+     * 平均线预测-蓝色球
+     */
+    private MutableLiveData<String> mAfBlueBall;
+
+    /**
+     * 黄金比例预测-红色球
+     */
+    private MutableLiveData<String> mGrfRedBall;
+
+    /**
+     * 黄金比例预测-蓝色球
+     */
+    private MutableLiveData<String> mGrfBlueBall;
+
+    /**
+     * 智能A预测-红色球
+     */
+    private MutableLiveData<String> mZafRedBall;
+
+    /**
+     * 智能A预测-蓝色球
+     */
+    private MutableLiveData<String> mZafBlueBall;
+
 
     private CompositeDisposable mDisposable;
 
@@ -62,6 +95,13 @@ public class SsqAnalysisViewModel extends AndroidViewModel {
         mRedBallFrequency = new MutableLiveData<>();
         mBlueBallFrequency = new MutableLiveData<>();
         mBlueBallTrend = new MutableLiveData<>();
+        mBlueBallTrend = new MutableLiveData<>();
+        mAfRedBall = new MutableLiveData<>();
+        mAfBlueBall = new MutableLiveData<>();
+        mGrfRedBall = new MutableLiveData<>();
+        mGrfBlueBall = new MutableLiveData<>();
+        mZafRedBall = new MutableLiveData<>();
+        mZafBlueBall = new MutableLiveData<>();
 
         mDisposable = new CompositeDisposable();
         //开奖结果
@@ -71,10 +111,15 @@ public class SsqAnalysisViewModel extends AndroidViewModel {
                 .subscribe(lotteryResult -> {
                     mResult.setValue(lotteryResult);
                     loadChartData(lotteryResult.getResultDate());
+                    forecast(lotteryResult.getResultDate());
                 }));
 
     }
 
+    /**
+     *
+     * @param date
+     */
     private void loadChartData(String date) {
         //红球出现的频率
         mDisposable.add(Single.create(new LotteryBallSource(dao, id, date, Constants.LOTTERY_BALL_FLAG_RED))
@@ -99,6 +144,53 @@ public class SsqAnalysisViewModel extends AndroidViewModel {
                 .subscribe(lineData -> mBlueBallTrend.setValue(lineData)));
     }
 
+    /**
+     * 预测
+     * @param date
+     */
+    private void forecast(String date) {
+        //平均线预测-红色球
+        mDisposable.add(Single.create(new LotteryBallSource(dao, id, date, Constants.LOTTERY_BALL_FLAG_RED))
+                .flatMap((Function<List<LotteryBall>, SingleSource<String>>) lotteryBalls ->
+                        Single.create(new AverageForecastSource(lotteryBalls, 6)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> mAfRedBall.setValue(result)));
+        //平均线预测-蓝色球
+        mDisposable.add(Single.create(new LotteryBallSource(dao, id, date, Constants.LOTTERY_BALL_FLAG_BLUE))
+                .flatMap((Function<List<LotteryBall>, SingleSource<String>>) lotteryBalls ->
+                        Single.create(new AverageForecastSource(lotteryBalls, 1)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> mAfBlueBall.setValue(result)));
+
+        //黄金比例预测-红色球
+        mDisposable.add(Single.create(new LotteryBallSource(dao, id, date, Constants.LOTTERY_BALL_FLAG_RED))
+                .flatMap((Function<List<LotteryBall>, SingleSource<String>>) lotteryBalls ->
+                        Single.create(new GoldRatioForecastSource(lotteryBalls, 6)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> mGrfRedBall.setValue(result)));
+        //黄金比例预测-蓝色球
+        mDisposable.add(Single.create(new LotteryBallSource(dao, id, date, Constants.LOTTERY_BALL_FLAG_BLUE))
+                .flatMap((Function<List<LotteryBall>, SingleSource<String>>) lotteryBalls ->
+                        Single.create(new GoldRatioForecastSource(lotteryBalls, 1)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> mGrfBlueBall.setValue(result)));
+
+        //智能A预测-红色球
+        mDisposable.add(Single.create(new IntelligentAForecastSource(dao, id, date, Constants.LOTTERY_BALL_FLAG_RED))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> mZafRedBall.setValue(result)));
+        //智能A预测-蓝色球
+        mDisposable.add(Single.create(new IntelligentAForecastSource(dao, id, date, Constants.LOTTERY_BALL_FLAG_BLUE))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> mZafBlueBall.setValue(result)));
+    }
+
 
     @Override
     protected void onCleared() {
@@ -120,6 +212,31 @@ public class SsqAnalysisViewModel extends AndroidViewModel {
 
     public LiveData<LotteryResult> result() {
         return mResult;
+    }
+
+
+    public LiveData<String> averageForecastRedBall() {
+        return mAfRedBall;
+    }
+
+    public LiveData<String> averageForecastBlueBall() {
+        return mAfBlueBall;
+    }
+
+    public LiveData<String> goldRatioForecastRedBall() {
+        return mGrfRedBall;
+    }
+
+    public LiveData<String> goldRatioForecastBlueBall() {
+        return mGrfBlueBall;
+    }
+
+    public LiveData<String> zafRedBall() {
+        return mZafRedBall;
+    }
+
+    public LiveData<String> zafBlueBall() {
+        return mZafBlueBall;
     }
 
 }

@@ -94,7 +94,53 @@ public abstract class LotteryDao {
 
 
     /**
-     * 目前用于查询指定日期之前的第n个球出现的球号,手机上目前查询一年之内的数据
+     * 查询彩票和开奖期号查询开奖结果
+     * @param id 彩票
+     * @param lotteryNo 开奖期号
+     * @return
+     */
+    @Query("SELECT * FROM LotteryResult WHERE id = :id AND lotteryNo = :lotteryNo")
+    public abstract LotteryResult queryLotteryResult(String id, String lotteryNo);
+
+
+    /**
+     * 目前用于查询指定日期之前,n天内第n个球出现的球号,用于展示球号的走势
+     * 如双色球的蓝色球
+     * @param id 彩票id
+     * @param position 第一个球是1
+     * @param date 查询指定日期之前的数据
+     * @param day 查询前n天的数据
+     * @return 返回数据按日期升序排列
+     */
+    @Query("SELECT id AS id, lotteryNo AS lotteryNo, " +
+            "SUBSTR(result, (:position - 1) * 3 + 1,  2) AS ballNo, " +
+            "resultDate AS resultDate FROM LotteryResult WHERE id = :id " +
+            "AND DATE(resultDate) < DATE(:date) AND DATE(resultDate) >= DATE(:date, 'start of day', '-'||:day||' day')" +
+            "ORDER BY resultDate ASC")
+    public abstract List<LotterySubResult> queryLotterySubResultByDayAsc(String id, int position,
+                                                                      String date, int day);
+
+
+    /**
+     * 目前用于查询指定日期之前,n天内第n个球出现的球号,用推测下一次出现的球号
+     * 如双色球的蓝色球
+     * @param id 彩票id
+     * @param position 第一个球是1
+     * @param date 查询指定日期之前的数据
+     * @param day 查询前n天的数据
+     * @return 返回数据按日期降序排列
+     */
+    @Query("SELECT id AS id, lotteryNo AS lotteryNo, " +
+            "SUBSTR(result, (:position - 1) * 3 + 1,  2) AS ballNo, " +
+            "resultDate AS resultDate FROM LotteryResult WHERE id = :id " +
+            "AND DATE(resultDate) < DATE(:date) AND DATE(resultDate) >= DATE(:date, 'start of day', '-'||:day||' day')" +
+            "ORDER BY resultDate DESC")
+    public abstract List<LotterySubResult> queryLotterySubResultByDayDesc(String id, int position,
+                                                                         String date, int day);
+
+
+    /**
+     * 目前用于查询指定日期之前的第n个球出现的球号
      * 如双色球的蓝色球
      * @param id 彩票id
      * @param position 第一个球是1
@@ -104,17 +150,8 @@ public abstract class LotteryDao {
     @Query("SELECT id AS id, lotteryNo AS lotteryNo, " +
             "SUBSTR(result, (:position - 1) * 3 + 1,  2) AS ballNo, " +
             "resultDate AS resultDate FROM LotteryResult WHERE id = :id " +
-            "AND DATE(resultDate) < DATE(:date) AND DATE(resultDate) >= DATE(:date, 'start of year', '-1 year')" +
+            "AND DATE(resultDate) < DATE(:date)" +
             "ORDER BY resultDate ASC")
     public abstract List<LotterySubResult> queryLotterySubResult(String id, int position, String date);
-
-    /**
-     * 查询彩票和开奖期号查询开奖结果
-     * @param id 彩票
-     * @param lotteryNo 开奖期号
-     * @return
-     */
-    @Query("SELECT * FROM LotteryResult WHERE id = :id AND lotteryNo = :lotteryNo")
-    public abstract LotteryResult queryLotteryResult(String id, String lotteryNo);
 
 }

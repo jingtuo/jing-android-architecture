@@ -31,4 +31,7 @@
     <string name="red_ball">红球</string>
     <string name="blue_ball">蓝球</string>
     <string name="lottery_chart_no_data">暂无开奖记录</string>
+    <string name="average_forecast">平均线预测</string>
+    <string name="gold_ratio_forecast">黄金比例预测</string>
+    <string name="intelligent_a_forecast">智能A预测</string>
 </resources>

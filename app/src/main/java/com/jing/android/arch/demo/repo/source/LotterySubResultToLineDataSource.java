@@ -47,7 +47,6 @@ public class LotterySubResultToLineDataSource implements SingleOnSubscribe<MyCha
 
                 try {
                     y =  Integer.parseInt(ballNo);
-                    Log.i("Test", "y -> " + y);
                     Entry entry = new Entry(i, y, item);
                     entries.add(entry);
                 } catch (NumberFormatException e) {
